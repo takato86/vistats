@@ -12,4 +12,4 @@ pip install vistats
 ```
 
 ## Usage
-Please see [here](examples\barplot_example.ipynb)
+Please see [here](https://github.com/takato86/vistats/blob/main/examples/barplot_example.ipynb)

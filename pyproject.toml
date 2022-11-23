@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "package of visualization for statistical tests."
 authors = ["takato86 <okudo@nii.ac.jp>"]
 readme = "README.md"
-homepage = ""
+repository = "https://github.com/takato86/vistats"
+
 
 [tool.poetry.dependencies]
 python = ">=3.9"
