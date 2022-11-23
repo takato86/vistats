@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "vistats"
+version = "0.1.0"
+description = "package of visualization for statistical tests."
+authors = ["takato86 <okudo@nii.ac.jp>"]
+readme = "README.md"
+homepage = ""
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+pandas = "^1.5.2"
+numpy = "^1.23.5"
+matplotlib = "^3.6.2"
+ipykernel = "^6.17.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
