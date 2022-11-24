@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray, 
                               height: np.ndarray, yerr: np.ndarray=None, dh=.05, 
-                              barh=.05, text_dh=0.02, fs=None):
+                              barh=.05, text_dh=0.01, fs=None):
     """ 
     Annotate barplot with p-values.
   
