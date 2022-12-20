@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray, 
                               height: np.ndarray, yerr: np.ndarray=None, dh=.05, 
-                              barh=.05, text_dh=0.01, fs=None):
+                              barh=.05, text_dh=0.01, fs=None, ax=None):
     """ 
     Annotate barplot with p-values.
   
@@ -22,6 +22,8 @@ def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.nda
     :param text_dh: how a text is over the line in axes cordinates(0 to 1)
     :param fs: font size
     """
+
+    ax = ax if ax is not None else plt
     
     # sorting tuples by the first element of each tuple.
     sorted_values = [idx1 for idx1, _, _ in tuples]
@@ -69,14 +71,14 @@ def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.nda
         bary = [y, y+fixed_barh, y+fixed_barh, y]
         mid = ((lx+rx)/2, y + font_height / 2 + fixed_text_dh)
     
-        plt.plot(barx, bary, c='black')
+        ax.plot(barx, bary, c='black')
     
         kwargs = dict(ha='center', va='bottom')
         if fs is not None:
             kwargs['fontsize'] = fs
     
         kwargs['color'] = "black"
-        plt.text(*mid, text, **kwargs)
+        ax.text(*mid, text, **kwargs)
         
         counter_idx[idx1] += 1
         counter_idx[idx2] += 1
