@@ -1,1 +1,1 @@
-from vistats.core import barplot_annotate_brackets
+from vistats.core import annotate_brackets, boxplot_annotate_brackets

@@ -1,14 +1,42 @@
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import List, Tuple
+from matplotlib import cbook
 
 
-def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray, 
-                              height: np.ndarray, yerr: np.ndarray=None, dh=.05, 
-                              barh=.05, text_dh=0.01, fs=None, ax=None):
+def boxplot_annotate_brackets(
+    tuples: List[Tuple[int, int, str]], x: np.ndarray,
+    dh=.05, barh=.05, text_dh=0.01, fs=None, ax=None,
+    **boxplotkwargs
+    ):
+    """Annotate boxplot
+
+    Args:
+        tuples (List[Tuple[int, int, str]]): list of tuples including (idx1, idx2, text)
+            :param idx1: number of left bar to put bracket over
+            :param idx2: number of right bar to put bracket over
+            :param text: string to write or number for generating asterixes
+        x (np.ndarray): Data that will be represented in the boxplots. Should have 2 or fewer dimensions.
+        dh (float, optional): height offset over bar / bar + yerr in axes coordinates (0 to 1). Defaults to .05.
+        barh (float, optional): bar height in axes coordinates (0 to 1). Defaults to .05.
+        text_dh (float, optional): _description_. Defaults to 0.01.
+        fs (_type_, optional): how a text is over the line in axes cordinates(0 to 1). Defaults to None.
+        ax (_type_, optional): font size. Defaults to None.
+    """
+    stats = cbook.boxplot_stats(x, **boxplotkwargs)
+    height = [stat['q3'] for stat in stats]
+    yerr = [stat['whishi'] - stat['q3'] for stat in stats]
+    bars = np.arange(1, x.shape[1] + 1)
+    annotate_brackets(
+        tuples, bars, height, yerr, dh=dh, barh=barh, text_dh=text_dh, fs=fs, ax=ax
+    )
+
+
+def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray, 
+                      height: np.ndarray, yerr: np.ndarray=None, dh=.05, 
+                      barh=.05, text_dh=0.01, fs=None, ax=None):
     """ 
-    Annotate barplot with p-values.
+    Annotate plot with brackets and texts.
   
     :param tuples: list of tuples including (idx1, idx2, text)
         :param idx1: number of left bar to put bracket over
@@ -69,7 +97,7 @@ def barplot_annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.nda
     
         barx = [lx, lx, rx, rx]
         bary = [y, y+fixed_barh, y+fixed_barh, y]
-        mid = ((lx+rx)/2, y + font_height / 2 + fixed_text_dh)
+        mid = ((lx+rx)/2, y + fixed_barh + fixed_text_dh)
     
         ax.plot(barx, bary, c='black')
     

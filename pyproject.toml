@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vistats"
-version = "0.1.4"
+version = "0.1.5"
 description = "package of visualization for statistical tests."
 authors = ["takato86 <okudo@nii.ac.jp>"]
 readme = "README.md"

@@ -1,4 +1,4 @@
 import pytest
 
-def test_barplot_annotate_brackets():
+def test_annotate_brackets():
     pass
