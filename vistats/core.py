@@ -48,7 +48,7 @@ def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray,
     :param dh: height offset over bar / bar + yerr in axes coordinates (0 to 1)
     :param barh: bar height in axes coordinates (0 to 1)
     :param text_dh: how a text is over the line in axes cordinates(0 to 1)
-    :param fs: font size
+    :param fs: font size (pt)
     """
 
     ax = ax if ax is not None else plt
@@ -60,24 +60,29 @@ def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray,
     max_y = 0
     # get font size.
     fs = fs if fs is not None else plt.rcParams["font.size"]
+    # pt to px (1px = 0.75pt)
+    fspx = fs * 4 / 3
 
     # decide a margin over bar+yerr, a height of bar, a margin of text.
-    ax_min_y, ax_max_y = plt.gca().get_ylim()
-    fixed_dh = dh * (ax_max_y - ax_min_y)
-    fixed_barh = barh * (ax_max_y - ax_min_y)
-    fixed_text_dh = text_dh * (ax_max_y - ax_min_y)
+    origin_ax_min_y, origin_ax_max_y = plt.gca().get_ylim()
+    fixed_dh = dh * (origin_ax_max_y - origin_ax_min_y)
+    fixed_barh = barh * (origin_ax_max_y - origin_ax_min_y)
+    fixed_text_dh = text_dh * (origin_ax_max_y - origin_ax_min_y)
 
     # estimate height
     # Note that the current axes will make large as the following process adds bars
     # These commands estimate the maximum y of the y-axis.
     p_miny, p_maxy = plt.gca().get_window_extent().get_points()[:, 1]
-    font_height = fs * (ax_max_y - ax_min_y) / (p_maxy - p_miny)
-    ax_max_y += fixed_dh + len(tuples) * (fixed_text_dh*2 + fixed_barh + font_height)
+    font_height = fspx * (origin_ax_max_y - origin_ax_min_y) / (p_maxy - p_miny)
 
-    # ajust font height
-    # Get fontsize in the axes coordinates.
-    font_height = fs * (ax_max_y - ax_min_y) / (p_maxy - p_miny)
+    # Repeating 5 times empirically makes the loss less than 1.
+    for _ in range(5):
+        ax_max_y = origin_ax_max_y + fixed_dh + len(tuples) * (fixed_text_dh*2 + fixed_barh + font_height)
+        # ajust font height
+        # Get fontsize in the axes coordinates.
+        font_height = fspx * (ax_max_y - origin_ax_min_y) / (p_maxy - p_miny)
 
+    # plot brackets and texts.
     for tuple_idx  in sorted_tuple_idxes:
         idx1, idx2, text = tuples[tuple_idx]
 
@@ -88,9 +93,9 @@ def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray,
             ly += yerr[idx1]
             ry += yerr[idx2]
     
-        y = max(ly, ry) + fixed_dh
+        base_y = max(ly, ry) + fixed_dh
         # bar + yerr / max_y plus the text with its margins.
-        y = max(y, max_y + fixed_barh + 2*fixed_text_dh + font_height*1.5)
+        y = max(base_y, max_y + fixed_barh + fixed_text_dh + font_height + fixed_text_dh)
 
         if max_y < y:
             max_y = y
