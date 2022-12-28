@@ -60,7 +60,7 @@ def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray,
     max_y = 0
     # get font size.
     fs = fs if fs is not None else plt.rcParams["font.size"]
-    # pt to px (1px = 0.75pt)
+    # pt to px (1px = 0.75pt = 3/4pt)
     fspx = fs * 4 / 3
 
     # decide a margin over bar+yerr, a height of bar, a margin of text.
@@ -69,10 +69,15 @@ def annotate_brackets(tuples: List[Tuple[int, int, str]], center: np.ndarray,
     fixed_barh = barh * (origin_ax_max_y - origin_ax_min_y)
     fixed_text_dh = text_dh * (origin_ax_max_y - origin_ax_min_y)
 
+    # dot per pixel. pixel is assumed to be 1/96 of an inch
+    dpp = plt.rcParams["figure.dpi"] / 96
+
     # estimate height
     # Note that the current axes will make large as the following process adds bars
     # These commands estimate the maximum y of the y-axis.
     p_miny, p_maxy = plt.gca().get_window_extent().get_points()[:, 1]
+    # transform 1 dot per pixel
+    p_miny, p_maxy = p_miny / dpp, p_maxy / dpp
     font_height = fspx * (origin_ax_max_y - origin_ax_min_y) / (p_maxy - p_miny)
 
     # Repeating 5 times empirically makes the loss less than 1.
